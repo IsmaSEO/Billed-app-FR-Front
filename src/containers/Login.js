@@ -1,7 +1,7 @@
 import { ROUTES_PATH } from "../constants/routes.js";
 export let PREVIOUS_LOCATION = "";
 
-// we use a class so as to test its methods in e2e tests
+// we use a class so as to test its methods in e2e tests //
 export default class Login {
   constructor({
     document,
