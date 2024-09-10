@@ -1,11 +1,19 @@
-import VerticalLayout from './VerticalLayout.js'
-import ErrorPage from "./ErrorPage.js"
-import LoadingPage from "./LoadingPage.js"
+import Actions from "./Actions.js";
+import ErrorPage from "./ErrorPage.js";
+import LoadingPage from "./LoadingPage.js";
+import VerticalLayout from "./VerticalLayout.js";
 
-import Actions from './Actions.js'
+// Fonction pour trier les factures par date dans l'ordre croissant
+// Cette fonction prend en paramètre un tableau de factures
+const sortBills = (bills) => {
+  return bills
+    ? bills.sort((a, b) => new Date(b.date) - new Date(a.date)) // Tri décroissant par date
+    : []; // Si aucun bill, on retourne un tableau vide
+};
 
+// Fonction pour créer une ligne du tableau avec les détails d'une facture
 const row = (bill) => {
-  return (`
+  return `
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
@@ -16,17 +24,22 @@ const row = (bill) => {
         ${Actions(bill.fileUrl)}
       </td>
     </tr>
-    `)
-  }
+    `;
+};
 
+// Fonction pour générer toutes les lignes du tableau à partir des factures
+// On trie les factures avant de générer les lignes
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
-}
+  const sortedBills = sortBills(data); // On trie les factures par date
+  return sortedBills.map((bill) => row(bill)).join(""); // On crée une ligne pour chaque facture et on les joint pour afficher un tableau complet
+};
 
+// Fonction principale qui gère l'affichage des factures, du chargement ou des erreurs
+// Cette fonction retourne l'affichage du tableau ou d'une page de chargement/erreur
 export default ({ data: bills, loading, error }) => {
-  
-  const modal = () => (`
-    <div class="modal fade" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  // Contenu de la modale pour afficher les factures
+  const modal = () => `
+    <div class="modal fade" id="modaleFile" data-testid="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -40,15 +53,20 @@ export default ({ data: bills, loading, error }) => {
         </div>
       </div>
     </div>
-  `)
+  `;
 
+  // Si les données sont en train de charger, on retourne la page de chargement
   if (loading) {
-    return LoadingPage()
-  } else if (error) {
-    return ErrorPage(error)
+    return LoadingPage(); // Affichage de la page de chargement
   }
-  
-  return (`
+
+  // Si une erreur est survenue, on retourne la page d'erreur avec le message d'erreur
+  else if (error) {
+    return ErrorPage(error); // Affichage de la page d'erreur avec le message passé en paramètre
+  }
+
+  // Si tout est ok, on affiche la page des factures
+  return `
     <div class='layout'>
       ${VerticalLayout(120)}
       <div class='content'>
@@ -75,6 +93,5 @@ export default ({ data: bills, loading, error }) => {
         </div>
       </div>
       ${modal()}
-    </div>`
-  )
-}
+    </div>`;
+};
