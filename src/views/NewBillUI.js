@@ -1,8 +1,9 @@
-import VerticalLayout from './VerticalLayout.js'
+import VerticalLayout from "./VerticalLayout.js";
 
-export default () => {
+export default (bill = {}) => {
+  // bill par défaut vide pour permettre l'affichage du nom du fichier si disponible
 
-  return (`
+  return `
     <div class='layout'>
       ${VerticalLayout(120)}
       <div class='content'>
@@ -56,6 +57,11 @@ export default () => {
                   <div class="col-half">
                     <label for="file" class="bold-label">Justificatif</label>
                     <input required type="file" class="form-control blue-border" data-testid="file" />
+                    <p data-testid="file-name">${
+                      bill.fileName
+                        ? bill.fileName
+                        : "Aucun fichier sélectionné"
+                    }</p>
                   </div>
                 </div>
             </div>
@@ -70,5 +76,5 @@ export default () => {
         </div>
       </div>
     </div>
-  `)
-}
+  `;
+};
